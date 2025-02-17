@@ -1,3 +1,4 @@
+git@github.com:IvanKiryukhin19/web-larek-frontend.git
 # Проектная работа "Веб-ларек"
 
 Стек: HTML, SCSS, TS, Webpack
