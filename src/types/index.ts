@@ -53,3 +53,12 @@ export interface IApiResponseData{
 export interface IViewComponent{
   replaceElementsInContainer:HTMLElement[];
 }
+
+export interface IOrderPayload{
+  payment:string;
+  email:TOptionsInfo;
+  phone:TOptionsInfo;
+  address:TOptionsInfo;
+  total:number;
+  items:string[];
+}

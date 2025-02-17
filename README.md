@@ -1,3 +1,4 @@
+git@github.com:IvanKiryukhin19/web-larek-frontend.git
 # Проектная работа "Веб-ларек"
 
 Стек: HTML, SCSS, TS, Webpack
@@ -113,6 +114,17 @@ export interface IApiResponseData{
   total:number;
   items:ICard[];
   id:string;
+}
+```
+Интерфейс тела запроса для оформления запроса
+```
+export interface IOrderPayload{
+  payment:string;
+  email:TOptionsInfo;
+  phone:TOptionsInfo;
+  address:TOptionsInfo;
+  total:number;
+  items:string[];
 }
 ```
 #### Интерфесы отображения

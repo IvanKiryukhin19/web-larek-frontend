@@ -3,7 +3,7 @@ import { EventEmitter } from './components/base/events';
 import { Api } from './components/base/api';
 import { API_URL, buttonPreviewTitle, CURRENCY, typeOptions } from './utils/constants';
 import { ModelCardsData } from './components/model/modelCards';
-import { IApiResponseData, IBasketData, ICard, IUserData, TOptionPayment, TOptionsInfo } from './types';
+import { IApiResponseData, IBasketData, ICard, IOrderPayload, IUserData, TOptionPayment, TOptionsInfo } from './types';
 import { Page } from './components/view/page';
 import { ModelBasket } from './components/model/modelBasket';
 import { Modal } from './components/view/viewModal';
@@ -56,8 +56,7 @@ events.on('ModelCardsData:loaded',()=>{
   const cardsHTMLArray=cardsData.getCards().map(card=>{
     const cardCatalogContainer=cloneTemplate('#card-catalog');
     const cardForCatalog=new CardCatalog(cardCatalogContainer,events);
-    const otherData=transformPrice(card,cardForCatalog)
-    return cardForCatalog.render(otherData);
+    return cardForCatalog.render({...card,...transformPrice(card.price)});
   })
   page.render({
     replaceElementsInContainer:cardsHTMLArray,
@@ -103,8 +102,7 @@ events.on('ModelCardsData:selected',()=>{
     buttonOption=Object.assign(buttonOption,{buttonElementDisabled:!card.price})
     
     cardForModal.render(buttonOption);
-    const otherData=transformPrice(card,cardForModal);
-    cardForModal.render(otherData);
+    cardForModal.render({...card,...transformPrice(card.price)});
 
     modal.render({replaceElementsInContainer:[cardForModal.getContainer()]});
     modal.open();
@@ -124,8 +122,7 @@ events.on('ModelBasket:changed',()=>{
     const basketCardContainer=cloneTemplate('#card-basket');
     const basketCard=new CardBasket(basketCardContainer,events)
     basketCard.setCardIndex((++index).toString());
-    const otherData=transformPrice(card,basketCard);
-    return basketCard.render(otherData);
+    return basketCard.render({...card,...transformPrice(card.price)});
   });
   modalBasket.render({
     replaceElementsInContainer:cardsBasketHTMLArray,
@@ -219,13 +216,13 @@ events.on('Order:submit',()=>{
 
 //Событие при нажатии кнопки "Оплатить"
 events.on('Contacts:submit',()=>{
-  const bodyRequest:{[key:string]:string|number|string[]}={
+  const bodyRequest:IOrderPayload={
     payment: <string>user.getPayment(),
     email: <TOptionsInfo>user.getUserInfo('email'),
     phone: <TOptionsInfo>user.getUserInfo('phone'),
     address: <TOptionsInfo>user.getUserInfo('address'),
-    total:<number>basket.getSumCards(),
-    items:<string[]>basket.getCards().map(card=>card.id)
+    total: <number>basket.getSumCards(),
+    items: <string[]>basket.getCards().map(card=>card.id)
   }
 
   const apiOrder=new Api(API_URL);
@@ -247,14 +244,12 @@ events.on('Success:click',()=>{
   modal.close();
 })
 
-function transformPrice<T extends {price:string|null}>(card:ICard, object:T){
-  const {price,...otherData}=card;
-  if (!card.price) {
-    object.price=null;
+function transformPrice(price:number|null):{price:string}{
+  if (!price) {
+    return {price:''};
   }else{
-    object.price=formatPrice(card.price);
+    return {price:formatPrice(price)};
   }
-  return otherData;
 }
 
 function formatPrice(value:number):string{
