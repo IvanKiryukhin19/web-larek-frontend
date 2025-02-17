@@ -27,7 +27,14 @@
 			</div>
 		</header>
 
-		<main class="gallery"></main>
+		<main class="gallery">
+			<button class="gallery__item card">
+				<span class="card__category card__category_soft">софт-скил</span>
+				<h2 class="card__title">+1 час в сутках</h2>
+				<img class="card__image" src="<%=require('../images/Subtract.svg')%>" alt="" />
+				<span class="card__price">751 синапсов</span>
+			</button>
+		</main>
 	</div>
 
 	<div class="modal" id="modal-container">
@@ -39,7 +46,7 @@
 		</div>
 	</div>
 
-	<div class="modal modal_active">
+	<div class="modal">
 		<div class="modal__container">
 			<button class="modal__close" aria-label="закрыть"></button>
 			<div class="modal__content">
@@ -103,8 +110,8 @@
 						<div class="order__field">
 							<h2 class="modal__title">Способ оплаты</h2>
 							<div class="order__buttons">
-								<button type="button" class="button button_alt">Онлайн</button>
-								<button type="button" class="button button_alt">При получении</button>
+								<button name="card" type="button" class="button button_alt">Онлайн</button>
+								<button name="cash" type="button" class="button button_alt">При получении</button>
 							</div>
 						</div>
 						<label class="order__field">
@@ -166,7 +173,7 @@
 
 	<template id="card-catalog">
 		<button class="gallery__item card">
-			<span class="card__category card__category_soft">софт-скил</span>
+			<span class="card__category">софт-скил</span>
 			<h2 class="card__title">+1 час в сутках</h2>
 			<img class="card__image" src="<%=require('../images/Subtract.svg')%>" alt="" />
 			<span class="card__price">750 синапсов</span>
