@@ -216,28 +216,38 @@ events.on('Order:submit',()=>{
 
 //Событие при нажатии кнопки "Оплатить"
 events.on('Contacts:submit',()=>{
-  const bodyRequest:IOrderPayload={
-    payment: <string>user.getPayment(),
-    email: <TOptionsInfo>user.getUserInfo('email'),
-    phone: <TOptionsInfo>user.getUserInfo('phone'),
-    address: <TOptionsInfo>user.getUserInfo('address'),
-    total: <number>basket.getSumCards(),
-    items: <string[]>basket.getCards().map(card=>card.id)
-  }
-
-  const apiOrder=new Api(API_URL);
-  apiOrder.post('/order',bodyRequest,'POST')
-    .then(data=><IApiResponseData>data)
-    .then(data=>{
-      //обнуляем данные
-      cleaningUserData(basket,user)
-      //выводим сообщение об успешном заказе
-      modalSuccess.price=`Списано ${formatPrice(data.total)}`;
-      modal.render({
-        replaceElementsInContainer:[modalSuccess.getContainer()],
+  
+  const payment:string|null=user.getPayment();
+  const address:string|null=user.getUserInfo('address');
+  const email:string|null=user.getUserInfo('email');
+  const phone:string|null=user.getUserInfo('phone');
+ 
+  if (payment && address && email && phone){
+    const bodyRequest:IOrderPayload={
+      payment: payment,
+      email: address,
+      phone: email,
+      address: phone,
+      total: basket.getSumCards(),
+      items: basket.getCards().map(card=>card.id)
+    }
+  
+    const apiOrder=new Api(API_URL);
+    apiOrder.post('/order',bodyRequest,'POST')
+      .then(data=><IApiResponseData>data)
+      .then(data=>{
+        //обнуляем данные
+        cleaningUserData(basket,user)
+        //выводим сообщение об успешном заказе
+        modalSuccess.price=`Списано ${formatPrice(data.total)}`;
+        modal.render({
+          replaceElementsInContainer:[modalSuccess.getContainer()],
+        })
       })
-    })
-    .catch(error=>console.log(`Заказ не оформлен. Ошибка - ${error}`))
+      .catch(error=>console.log(`Заказ не оформлен. Ошибка - ${error}`))
+  }else{
+    console.log('Пустые значения в полях модели данных Пользователя, ошибка валидации')
+  }
 })
 
 events.on('Success:click',()=>{

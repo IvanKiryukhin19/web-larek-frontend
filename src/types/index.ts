@@ -56,9 +56,9 @@ export interface IViewComponent{
 
 export interface IOrderPayload{
   payment:string;
-  email:TOptionsInfo;
-  phone:TOptionsInfo;
-  address:TOptionsInfo;
+  email:string;
+  phone:string;
+  address:string;
   total:number;
   items:string[];
 }
